@@ -70,6 +70,18 @@ const verifyPayment = asyncHandler(async (req, res) => {
     }
 });
 
+// controllers/paymentController.js
+import Razorpay from 'razorpay';
+
+// Debug karne ke liye ye line add karein (Sirf temporarily)
+console.log("Razorpay ID:", process.env.RAZORPAY_KEY_ID); 
+
+const Razorpay = new Razorpay({
+    
+key_id: process.env.RAZORPAY_KEY_ID || '', 
+key_secret: process.env.RAZORPAY_KEY_SECRET || '',
+});
+
 // @desc    Get Razorpay Key ID
 // @route   GET /api/payment/key
 // @access  Private
