@@ -3,43 +3,33 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 
-// Env variables load karein
 dotenv.config();
 
 const app = express();
-
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Database Connection Logic
+// MongoDB Connection with Error Handling for Vercel
 const connectDB = async () => {
     try {
         if (mongoose.connection.readyState >= 1) return;
         await mongoose.connect(process.env.MONGO_URI);
-        console.log('MongoDB Connected successfully');
-    } catch (error) {
-        console.error('MongoDB Connection Error:', error.message);
+        console.log('MongoDB Connected');
+    } catch (err) {
+        console.error('DB Connection Error:', err.message);
     }
 };
-
-// Connect to DB
 connectDB();
 
-// Basic Route
 app.get('/', (req, res) => {
-    res.send('Dharti Ka Swad Backend is running live!');
+    res.send('Dharti Ka Swad Backend is Live and Working!');
 });
 
-// Port setting
-const PORT = process.env.PORT || 5000;
-
-// Local development ke liye server start karein
-if (process.env.NODE_ENV !== 'production') {
-    app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
-    });
-}
-
-// Vercel ke liye app export karein
+// Vercel ke liye export zaroori hai
 module.exports = app;
+
+// Local testing ke liye
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
