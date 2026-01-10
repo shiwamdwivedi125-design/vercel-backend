@@ -1,16 +1,16 @@
 const mongoose = require('mongoose');
-require('dotenv').config();
 
-const checkConnection = async () => {
+const connectDB = async () => {
     try {
-        console.log('Connecting to MongoDB...');
-        await mongoose.connect(process.env.MONGO_URI);
-        console.log('MongoDB connection successful!');
-        process.exit(0);
+        if (mongoose.connection.readyState >= 1) return;
+        
+        const conn = await mongoose.connect(process.env.MONGO_URI);
+        console.log(`MongoDB Connected: ${conn.connection.host}`);
     } catch (error) {
-        console.error('MongoDB connection failed:', error.message);
-        process.exit(1);
+        console.error(`Error: ${error.message}`);
+        // Vercel par process.exit(1) nahi karte, sirf error throw karte hain
+        throw error;
     }
 };
 
-checkConnection();
+module.exports = connectDB;

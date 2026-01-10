@@ -77,4 +77,27 @@ app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
+const express = require('express');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const connectDB = require('./db'); // Upari file ka use
 
+dotenv.config();
+connectDB();
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+app.get('/', (req, res) => {
+    res.send('API is running...');
+});
+
+// Port configuration for local and Vercel
+const PORT = process.env.PORT || 5000;
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+
+module.exports = app; // Vercel ke liye zaroori
