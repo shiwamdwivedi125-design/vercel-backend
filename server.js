@@ -1,44 +1,48 @@
-// CommonJS syntax ka use karein
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 
-// .env file load karein
+// 1. .env Configuration
 dotenv.config();
 
 const app = express();
 
-// Middleware
+// 2. Middleware
 app.use(cors());
 app.use(express.json());
 
-// Database connection function
+// 3. Database Connection logic
 const connectDB = async () => {
     try {
-        if (mongoose.connection.readyState >= 1) return;
-        await mongoose.connect(process.env.MONGO_URI);
+        const uri = process.env.MONGO_URI;
+        if (!uri) {
+            console.error("Error: MONGO_URI is not defined in environment variables!");
+            return;
+        }
+        await mongoose.connect(uri);
         console.log('MongoDB Connected successfully');
     } catch (error) {
         console.error('MongoDB Connection Error:', error.message);
     }
 };
 
-// Connect to DB
 connectDB();
 
-// Root route
+// 4. Routes
 app.get('/', (req, res) => {
-    res.send('Dharti Ka Swad Backend is running live on Vercel!');
+    res.send('Dharti Ka Swad Backend is running live on Railway!');
 });
 
-// Port setting for Vercel and Local
+// 5. Port Setting (Railway ke liye Sabse Zaroori)
+// Railway automatically 'PORT' environment variable deta hai
 const PORT = process.env.PORT || 5000;
-if (process.env.NODE_ENV !== 'production') {
-    app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
-    });
-}
 
-// Vercel ke liye app export karein (ZAROORI HAI)
+// '0.0.0.0' par listen karna Railway/Docker environments ke liye best hota hai
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+
+
+// Export (Optional: Isse Vercel par bhi kaam karega)
 module.exports = app;
