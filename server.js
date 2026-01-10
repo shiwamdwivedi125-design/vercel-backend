@@ -1,3 +1,12 @@
+// server.js mein sabse upar ye badlein
+const express = require('express');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const connectDB = require('./db');
+
+dotenv.config();
+// ... baaki code
+
 import dotenv from 'dotenv';
 dotenv.config(); // Ye line sabse upar honi chahiye
 
