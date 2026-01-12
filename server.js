@@ -9,15 +9,20 @@ dotenv.config();
 const app = express();
 
 // 2. Middleware
-app.use(cors());
+// CORS ko update kiya gaya hai taaki frontend connect ho sake
+app.use(cors({
+    origin: "*", // Testing ke liye sab allow hai, baad mein apna frontend URL daal sakte hain
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+}));
 app.use(express.json());
 
-// 3. Database Connection logic
+// 3. Database Connection
 const connectDB = async () => {
     try {
         const uri = process.env.MONGO_URI;
         if (!uri) {
-            console.error("Error: MONGO_URI is not defined in environment variables!");
+            console.error("Error: MONGO_URI missing!");
             return;
         }
         await mongoose.connect(uri);
@@ -26,31 +31,30 @@ const connectDB = async () => {
         console.error('MongoDB Connection Error:', error.message);
     }
 };
-
 connectDB();
 
 // 4. Routes
+
+// Yeh wo route hai jo aapko browser mein dikhta hai
 app.get('/', (req, res) => {
-    res.send('Dharti Ka Swad Backend is running live on Railway!');
+    // Ise JSON mein badal dete hain taaki frontend crash na ho agar yahan hit kare
+    res.json({ message: 'Dharti Ka Swad Backend is running live on Railway!' });
 });
 
-// 5. Port Setting (Railway ke liye Sabse Zaroori)
-// Railway automatically 'PORT' environment variable deta hai
+// Yahan apne routes import aur use karein (Example)
+// app.use('/api/users', require('./routes/userRoutes'));
+// app.use('/api/products', require('./routes/productRoutes'));
+
+// 404 Route: Agar koi galat URL hit kare toh HTML ke badle JSON mile
+app.use((req, res) => {
+    res.status(404).json({ error: "Route not found. Please check your API path." });
+});
+
+// 5. Port Setting
 const PORT = process.env.PORT || 5000;
 
-// '0.0.0.0' par listen karna Railway/Docker environments ke liye best hota hai
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
-const cors = require('cors');
-
-// Ise setup karein taaki kisi bhi frontend se request aa sake
-app.use(cors({
-    origin: '*', 
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-// Export (Optional: Isse Vercel par bhi kaam karega)
-module.exports = app;\
+module.exports = app;
