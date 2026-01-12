@@ -43,6 +43,14 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
+const cors = require('cors');
+
+// Ise setup karein taaki kisi bhi frontend se request aa sake
+app.use(cors({
+    origin: '*', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Export (Optional: Isse Vercel par bhi kaam karega)
-module.exports = app;
+module.exports = app;\
