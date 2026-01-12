@@ -9,9 +9,8 @@ dotenv.config();
 const app = express();
 
 // 2. Middleware
-// CORS ko update kiya gaya hai taaki frontend connect ho sake
 app.use(cors({
-    origin: "*", // Testing ke liye sab allow hai, baad mein apna frontend URL daal sakte hain
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));
@@ -33,19 +32,23 @@ const connectDB = async () => {
 };
 connectDB();
 
-// 4. Routes
+// 4. Routes (Inhe hamesha app.listen se upar rakhein)
 
-// Yeh wo route hai jo aapko browser mein dikhta hai
+// Main Page Route
 app.get('/', (req, res) => {
-    // Ise JSON mein badal dete hain taaki frontend crash na ho agar yahan hit kare
     res.json({ message: 'Dharti Ka Swad Backend is running live on Railway!' });
 });
 
-// Yahan apne routes import aur use karein (Example)
-// app.use('/api/users', require('./routes/userRoutes'));
-// app.use('/api/products', require('./routes/productRoutes'));
+// --- YAHAN APNE ROUTES CONNECT KAREIN ---
+// Dhayan dein: Pehle file check karein ki './routes/userRoutes' sahi path hai ya nahi
+const userRoutes = require('./routes/userRoutes');
+app.use('/api/users', userRoutes);
 
-// 404 Route: Agar koi galat URL hit kare toh HTML ke badle JSON mile
+// Agar products ke routes hain toh unhe bhi yahan add karein:
+// const productRoutes = require('./routes/productRoutes');
+// app.use('/api/products', productRoutes);
+
+// 404 Route: Galat URL ke liye
 app.use((req, res) => {
     res.status(404).json({ error: "Route not found. Please check your API path." });
 });
