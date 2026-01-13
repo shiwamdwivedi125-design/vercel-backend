@@ -52,6 +52,9 @@ app.use('/api/users', userRoutes);
 app.use((req, res) => {
     res.status(404).json({ error: "Route not found. Please check your API path." });
 });
+// server.js mein app.listen se upar hona chahiye
+const userRoutes = require('./routes/userRoutes');
+app.use('/api/users', userRoutes);
 
 // 5. Port Setting
 const PORT = process.env.PORT || 5000;
