@@ -32,29 +32,21 @@ const connectDB = async () => {
 };
 connectDB();
 
-// 4. Routes (Inhe hamesha app.listen se upar rakhein)
+// 4. Routes
 
-// Main Page Route
+// Main Route
 app.get('/', (req, res) => {
     res.json({ message: 'Dharti Ka Swad Backend is running live on Railway!' });
 });
 
-// --- YAHAN APNE ROUTES CONNECT KAREIN ---
-// Dhayan dein: Pehle file check karein ki './routes/userRoutes' sahi path hai ya nahi
+// ZAROORI: Routes ko sirf EK BAAR define karein
 const userRoutes = require('./routes/userRoutes');
 app.use('/api/users', userRoutes);
 
-// Agar products ke routes hain toh unhe bhi yahan add karein:
-// const productRoutes = require('./routes/productRoutes');
-// app.use('/api/products', productRoutes);
-
-// 404 Route: Galat URL ke liye
+// 404 Route (Ise hamesha routes ke niche rakhein)
 app.use((req, res) => {
     res.status(404).json({ error: "Route not found. Please check your API path." });
 });
-// server.js mein app.listen se upar hona chahiye
-const userRoutes = require('./routes/userRoutes');
-app.use('/api/users', userRoutes);
 
 // 5. Port Setting
 const PORT = process.env.PORT || 5000;
