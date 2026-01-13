@@ -33,23 +33,23 @@ const connectDB = async () => {
 connectDB();
 
 // 4. Routes
-
-// Main Route
+// Main Page Route
 app.get('/', (req, res) => {
     res.json({ message: 'Dharti Ka Swad Backend is running live on Railway!' });
 });
 
-// ZAROORI: Routes ko sirf EK BAAR define karein
+// ZAROORI: Sirf ek baar yahan userRoutes define karein
+// (Duplicate line line 56 se hata di gayi hai)
 const userRoutes = require('./routes/userRoutes');
 app.use('/api/users', userRoutes);
 
-// 404 Route (Ise hamesha routes ke niche rakhein)
+// 404 Route: Agar koi galat URL hit kare
 app.use((req, res) => {
     res.status(404).json({ error: "Route not found. Please check your API path." });
 });
 
 // 5. Port Setting
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
