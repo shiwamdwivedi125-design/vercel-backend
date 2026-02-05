@@ -33,19 +33,50 @@ const connectDB = async () => {
 connectDB();
 
 // 4. Routes
-// Main Page Route
-app.get('/', (req, res) => {
-    res.json({ message: 'Dharti Ka Swad Backend is running live on Railway!' });
-});
-
-// ZAROORI: Sirf ek baar yahan userRoutes define karein
-// (Duplicate line line 56 se hata di gayi hai)
 const userRoutes = require('./routes/userRoutes');
-app.use('/api/users', userRoutes);
+const productRoutes = require('./routes/productRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
+const farmerRoutes = require('./routes/farmerRoutes');
+const contactRoutes = require('./routes/contactRoutes');
+const passwordResetRoutes = require('./routes/passwordResetRoutes');
 
-// 404 Route: Agar koi galat URL hit kare
+app.use('/api/users', userRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/upload', uploadRoutes);
+app.use('/api/payment', paymentRoutes);
+app.use('/api/farmers', farmerRoutes);
+app.use('/api/contact', contactRoutes);
+app.use('/api/password-reset', passwordResetRoutes);
+app.get('/api/config/paypal', (req, res) =>
+    res.send(process.env.PAYPAL_CLIENT_ID)
+);
+
+const path = require('path');
+// Fixed path for uploads (assuming backend and frontend are siblings in production too)
+app.use('/uploads', express.static(path.join(__dirname, '../frontend/public/images')));
+
+// 5. Deployment Logic
+if (process.env.NODE_ENV === 'production') {
+    // __dirname is backend folder, so we go up one level to reach frontend/dist
+    const distPath = path.join(__dirname, '../frontend/dist');
+    app.use(express.static(distPath));
+
+    app.get('*', (req, res) =>
+        res.sendFile(path.join(distPath, 'index.html'))
+    );
+} else {
+    // Main Page Route for dev
+    app.get('/', (req, res) => {
+        res.json({ message: 'Dharti Ka Swad Backend is running live!' });
+    });
+}
+
+// 404 Route (only reached in dev or if not static file)
 app.use((req, res) => {
-    res.status(404).json({ error: "Route not found. Please check your API path." });
+    res.status(404).json({ error: "Route not found." });
 });
 
 // 5. Port Setting
